@@ -1,10 +1,16 @@
 #include <Arduino.h>
 
+#include <ESP8266WiFi.h>
+#include <DNSServer.h>
+#include <ESP8266WebServer.h>
+#include <WiFiManager.h>
+
 void setup() {
   Serial.begin(9600);
+
+  WiFiManager wifiManager;
+  wifiManager.autoConnect("roots", "password");
 }
 
 void loop() {
-  Serial.write("test\n");
-  delay(1000);
 }
