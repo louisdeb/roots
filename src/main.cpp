@@ -5,8 +5,11 @@
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>
 
-const char *AP_NAME = "roots";
-const char *AP_PASS = "password";
+const char* AP_NAME = "roots";
+const char* AP_PASS = "password";
+
+const char* CANOPY_HOST = "grow.v2.vapor.cloud";
+const int CANOPY_PORT = 80;
 
 void setup() {
   Serial.begin(9600);
@@ -23,8 +26,33 @@ void setup() {
 
   authToken = authParam.getValue();
 
-  Serial.println("connected");
+  Serial.println("connected to wifi");
   Serial.println(authToken);
+
+  // When converting to HTTPS, we want to use WiFiClientSecure (on port 443)
+  WiFiClient client;
+  if (client.connect(CANOPY_HOST, CANOPY_PORT)) {
+    Serial.println("connected to canopy");
+
+    client.print(String("GET /") + " HTTP/1.1\r\n" + 
+                   "Host: " + CANOPY_HOST + "\r\n" +
+                   "Connection: close\r\n" +
+                   "\r\n");
+
+    while (client.connected() || client.available()) {
+        if (client.available()) {
+          String line = client.readStringUntil('\n');
+          Serial.println(line);
+        }
+    }
+
+    client.stop();
+    Serial.println("disconnected from canopy");
+  } else {
+    Serial.println("failed to connect to canopy");
+    client.stop();
+  }
+
 }
 
 void loop() {
