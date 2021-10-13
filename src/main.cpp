@@ -78,7 +78,7 @@ void setup() {
           Serial.print("got api key: ");
           Serial.println(CANOPY_API_KEY);
 
-          BOX_ID = doc["id"];
+          BOX_ID = doc["boxId"];
           Serial.print("got box id: ");
           Serial.println(BOX_ID);
         }
